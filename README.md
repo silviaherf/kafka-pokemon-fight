@@ -12,6 +12,6 @@ The consumer will then print out the battle in real-time.
 Let's fight!!!  
 
 _P.D. Next steps on this project should include:_  
-_*  Writing the events to a database_  
-_*  Synching a dashboard with the data in the database_
-_*  Adding more features by using a new topic to categorize data and load into another table_
+_*  Writing the events to a database_    
+_*  Synching a dashboard with the data in the database_  
+_*  Adding more features by using a new topic to categorize data and load into another table_  
