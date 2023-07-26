@@ -9,4 +9,9 @@ As a producer, I decided to go through the [PokeAPI](https://pokeapi.co/), and u
 
 The consumer will then print out the battle in real-time.
 
-Let's fight!!!
+Let's fight!!!  
+
+_P.D. Next steps on this project should include:_  
+_*  Writing the events to a database_  
+_*  Synching a dashboard with the data in the database_
+_*  Adding more features by using a new topic to categorize data and load into another table_
