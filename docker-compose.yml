@@ -1,3 +1,4 @@
+# https://developer.confluent.io/get-started/python/#kafka-setup
 ---
 version: '3'
 services:
