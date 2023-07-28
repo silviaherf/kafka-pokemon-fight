@@ -3,6 +3,11 @@
 import logging
 from configparser import ConfigParser
 from confluent_kafka import Consumer
+import psycopg2
+from datetime import datetime
+from dotenv import dotenv_values
+
+secrets = dotenv_values("src/.env")
 
 if __name__ == "__main__":
     task_logger = logging.getLogger()
@@ -26,6 +31,16 @@ if __name__ == "__main__":
     topic = "pokemon_topic"
     consumer.subscribe([topic], on_assign=reset_offset)
 
+    "connect to postgres"
+    conn = psycopg2.connect(
+        database="pokemon_kafka",
+        user=secrets.get("POSTGRES_USER"),
+        password=secrets.get("POSTGRES_PASSWORD"),
+        host="127.0.0.1",
+        port="5432",
+    )
+    cursor = conn.cursor()
+
     # Poll for new messages from Kafka and print them.
     try:
         while True:
@@ -36,15 +51,22 @@ if __name__ == "__main__":
                 # rebalance and start consuming
                 print("Waiting...")
             elif msg.error():
-                print("ERROR: %s".format(msg.error()))
+                print(f"ERROR: {msg.error()}")
             else:
                 # Extract the (optional) key and value, and print.
                 topic = msg.topic()
                 key = msg.key().decode("utf-8")
                 value = msg.value().decode("utf-8")
+                timestamp = datetime.utcfromtimestamp(msg.timestamp()[1] / 1000)
+
+                cursor.execute(
+                    "INSERT INTO pokemon_battle (pokemon_name,ability,timestamp) VALUES (%s, %s, %s)",
+                    (value, key, timestamp),
+                )
+                conn.commit()
 
                 print(
-                    f"Consumed event from topic {topic}: {value.capitalize()} used {key}"
+                    f"Saved event from topic {topic}: {value.capitalize()} used {key}"
                 )
     except KeyboardInterrupt:
         pass
